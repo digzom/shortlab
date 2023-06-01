@@ -6,6 +6,7 @@ defmodule ShortlabWeb.StoryLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
+    # {:ok, stream(socket, :stories, Stories.list_stories())}
     {:ok, stream(socket, :stories, Stories.list_stories())}
   end
 
