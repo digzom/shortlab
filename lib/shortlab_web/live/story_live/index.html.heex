@@ -1,0 +1,46 @@
+<.header>
+  Listing Stories
+  <:actions>
+    <.link patch={~p"/stories/new"}>
+      <.button>New Story</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table
+  id="stories"
+  rows={@streams.stories}
+  row_click={fn {_id, story} -> JS.navigate(~p"/stories/#{story}") end}
+>
+  <:col :let={{_id, story}} label="Name"><%= story.name %></:col>
+  <:col :let={{_id, story}} label="Label"><%= story.label %></:col>
+  <:col :let={{_id, story}} label="Release"><%= story.release %></:col>
+  <:col :let={{_id, story}} label="Number"><%= story.number %></:col>
+  <:col :let={{_id, story}} label="Type"><%= story.type %></:col>
+  <:col :let={{_id, story}} label="Project"><%= story.project %></:col>
+  <:action :let={{_id, story}}>
+    <div class="sr-only">
+      <.link navigate={~p"/stories/#{story}"}>Show</.link>
+    </div>
+    <.link patch={~p"/stories/#{story}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={{id, story}}>
+    <.link
+      phx-click={JS.push("delete", value: %{id: story.id}) |> hide("##{id}")}
+      data-confirm="Are you sure?"
+    >
+      Delete
+    </.link>
+  </:action>
+</.table>
+
+<.modal :if={@live_action in [:new, :edit]} id="story-modal" show on_cancel={JS.patch(~p"/stories")}>
+  <.live_component
+    module={ShortlabWeb.StoryLive.FormComponent}
+    id={@story.id || :new}
+    title={@page_title}
+    action={@live_action}
+    story={@story}
+    patch={~p"/stories"}
+  />
+</.modal>
