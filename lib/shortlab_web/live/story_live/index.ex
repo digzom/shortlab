@@ -6,8 +6,26 @@ defmodule ShortlabWeb.StoryLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
+    middleware = [
+      {Tesla.Middleware.BaseUrl, "https://api.github.com"},
+      Tesla.Middleware.JSON,
+      {Tesla.Middleware.Headers, [{"Shortcut-Token", "647bc707-c963-47ea-94c2-83c2897a301a"}]}
+    ]
+
+    client = Tesla.client(middleware)
+
+    {:ok, %Tesla.Env{body: stories}} =
+      Tesla.get(client, "https://api.app.shortcut.com/api/v3/labels/4/stories")
+
+    stories =
+      Enum.map(stories, fn story ->
+        Map.merge(story, %{id: Enum.random(0..300)})
+      end)
+
+    IO.inspect(stories)
+
     # {:ok, stream(socket, :stories, Stories.list_stories())}
-    {:ok, stream(socket, :stories, Stories.list_stories())}
+    {:ok, stream(socket, :stories, stories)}
   end
 
   @impl true
