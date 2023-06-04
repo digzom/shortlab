@@ -53,7 +53,8 @@ defmodule Shortlab.MixProject do
       {:guardian, "~> 2.0"},
       {:dialyxir, "~> 1.3", only: [:dev], runtime: false},
       {:tesla, "~> 1.7"},
-      {:hackney, "~> 1.17"}
+      {:hackney, "~> 1.17"},
+      {:credo, "~> 1.7", only: [:dev, :test], runtime: false}
     ]
   end
 
