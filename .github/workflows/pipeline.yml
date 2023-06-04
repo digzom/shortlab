@@ -6,35 +6,80 @@ on:
   pull_request:
     branches: [ "main" ]
 
+env:
+  MIX_ENV: test
+
 permissions:
   contents: read
 
 jobs:
-  build:
+  test:
+    services:
+      db:
+        image: postgres:14
+        ports: ['5432:5432']
+        env:
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
-    name: Build and test
     runs-on: ubuntu-latest
-
+    name: Test on OTP ${{matrix.otp}} / Elixir ${{matrix.elixir}}
+    strategy:
+      # Specify the OTP and Elixir versions to use when building
+      # and running the workflow steps.
+      matrix:
+        otp: ['25.0.4']       # Define the OTP version [required]
+        elixir: ['1.14.0']
     steps:
-    - uses: actions/checkout@v3
-    - name: Set up Elixir
+    - name: setup elixir
       uses: erlef/setup-beam@v1
       with:
-        elixir-version: '1.14.0'
-        otp-version: '24.0.1'
-      env: 
+        otp-version: ${{matrix.otp}}
+        elixir-version: ${{matrix.elixir}}
+      env:
         ImageOS: ubuntu20
 
-    - name: Restore dependencies cache
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Cache deps
+      id: cache-deps
       uses: actions/cache@v3
+      env:
+        cache-name: cache-elixir-deps
       with:
         path: deps
-        key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
-        restore-keys: ${{ runner.os }}-mix-
+        key: ${{ runner.os }}-mix-${{ env.cache-name }}-${{ hashFiles('**/mix.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-mix-${{ env.cache-name }}
+
+    - name: Cache compiled build
+      id: cache-build
+      uses: actions/cache@v3
+      env: 
+        cache-name: cache-compiled-build
+      with:
+        path: _build
+        key: ${{ runner.os }}-mix-${{ env.cache-name }}-${{ hashFiles('**/mix.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-mix-${{ env.cache-name }}-
+          ${{ runner.os }}-mix-
+
     - name: Install dependencies
       run: mix deps.get
-    - name: Run tests
-      run: mix test
-    - name: Run credo
+
+    - name: Compile
+      run: mix compile
+
+    - name: Formatting
+      run: mix format --check-formatted
+
+    - name: Credo
       run: mix credo
 
+    - name: Run tests
+      run: mix test
