@@ -19,7 +19,12 @@
 
 <.back navigate={~p"/stories"}>Back to stories</.back>
 
-<.modal :if={@live_action == :edit} id="story-modal" show on_cancel={JS.patch(~p"/stories/#{@story}")}>
+<.modal
+  :if={@live_action == :edit}
+  id="story-modal"
+  show
+  on_cancel={JS.patch(~p"/stories/#{@story}")}
+>
   <.live_component
     module={ShortlabWeb.StoryLive.FormComponent}
     id={@story.id}

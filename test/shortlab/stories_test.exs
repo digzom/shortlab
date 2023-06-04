@@ -21,7 +21,14 @@ defmodule Shortlab.StoriesTest do
     end
 
     test "create_story/1 with valid data creates a story" do
-      valid_attrs = %{label: "some label", name: "some name", number: "some number", project: "some project", release: "some release", type: "some type"}
+      valid_attrs = %{
+        label: "some label",
+        name: "some name",
+        number: "some number",
+        project: "some project",
+        release: "some release",
+        type: "some type"
+      }
 
       assert {:ok, %Story{} = story} = Stories.create_story(valid_attrs)
       assert story.label == "some label"
@@ -38,7 +45,15 @@ defmodule Shortlab.StoriesTest do
 
     test "update_story/2 with valid data updates the story" do
       story = story_fixture()
-      update_attrs = %{label: "some updated label", name: "some updated name", number: "some updated number", project: "some updated project", release: "some updated release", type: "some updated type"}
+
+      update_attrs = %{
+        label: "some updated label",
+        name: "some updated name",
+        number: "some updated number",
+        project: "some updated project",
+        release: "some updated release",
+        type: "some updated type"
+      }
 
       assert {:ok, %Story{} = story} = Stories.update_story(story, update_attrs)
       assert story.label == "some updated label"
