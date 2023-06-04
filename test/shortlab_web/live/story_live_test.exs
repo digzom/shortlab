@@ -4,8 +4,22 @@ defmodule ShortlabWeb.StoryLiveTest do
   import Phoenix.LiveViewTest
   import Shortlab.StoriesFixtures
 
-  @create_attrs %{label: "some label", name: "some name", number: "some number", project: "some project", release: "some release", type: "some type"}
-  @update_attrs %{label: "some updated label", name: "some updated name", number: "some updated number", project: "some updated project", release: "some updated release", type: "some updated type"}
+  @create_attrs %{
+    label: "some label",
+    name: "some name",
+    number: "some number",
+    project: "some project",
+    release: "some release",
+    type: "some type"
+  }
+  @update_attrs %{
+    label: "some updated label",
+    name: "some updated name",
+    number: "some updated number",
+    project: "some updated project",
+    release: "some updated release",
+    type: "some updated type"
+  }
   @invalid_attrs %{label: nil, name: nil, number: nil, project: nil, release: nil, type: nil}
 
   defp create_story(_) do
