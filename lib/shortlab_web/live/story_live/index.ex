@@ -22,7 +22,6 @@ defmodule ShortlabWeb.StoryLive.Index do
         Map.merge(story, %{id: Enum.random(0..300)})
       end)
 
-    # {:ok, stream(socket, :stories, Stories.list_stories())}
     {:ok, stream(socket, :stories, stories)}
   end
 
