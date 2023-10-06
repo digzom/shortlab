@@ -2,11 +2,9 @@
   Listing Stories
   <:actions>
     <.link patch={~p"/stories/new"}>
-      <.button>New Story</.button>
     </.link>
   </:actions>
 </.header>
-recently deployed
 <.table id="stories" rows={@streams.stories}>
   <:col :let={{_id, story}} label="Name"><%= story["name"] %></:col>
   <:col :let={{_id, story}} label="Label"><%= story["label"] %></:col>

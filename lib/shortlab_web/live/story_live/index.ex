@@ -36,12 +36,6 @@ defmodule ShortlabWeb.StoryLive.Index do
     |> assign(:story, Stories.get_story!(id))
   end
 
-  defp apply_action(socket, :new, _params) do
-    socket
-    |> assign(:page_title, "New Story")
-    |> assign(:story, %Story{})
-  end
-
   defp apply_action(socket, :index, _params) do
     socket
     |> assign(:page_title, "Listing Stories")
