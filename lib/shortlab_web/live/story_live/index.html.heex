@@ -1,25 +1,32 @@
-<.header>
-  Estórias
-  <:actions>
-    <.link patch={~p"/stories/create_mr"}>
+<.form for={@form} phx-submit="create_mr">
+  <.header>
+    Estórias
+    <:actions>
       <.button>Criar MR</.button>
-    </.link>
-  </:actions>
-</.header>
-<.table id="stories" rows={@streams.stories}>
-  <:col label="">
-    <input checked={true} id="mark_to_mr" name="mark_to_mr" type="checkbox" value="true" />
-  </:col>
-  <:col :let={{_id, story}} label="Name"><%= story["name"] %></:col>
-  <:col :let={{_id, story}} label="Label">
-    <div class="flex">
-      <%= for label <- story["labels"] do %>
-        <.shortcut_label background_color={label["color"]}>
-          <%= label["name"] %>
-        </.shortcut_label>
-      <% end %>
-    </div>
-  </:col>
-  <:col :let={{_id, story}} label="Number"><%= story["id"] %></:col>
-  <:col :let={{_id, story}} label="Type"><%= story["story_type"] %></:col>
-</.table>
+    </:actions>
+  </.header>
+  <.table id="stories" rows={@streams.stories}>
+    <:col :let={{id, story}} label="">
+      <.input
+        field={@form[:mrs]}
+        checked={true}
+        id={story["name"]}
+        name={"#{story["id"]}-#{story["name"]}"}
+        type="checkbox"
+        value={{id, story["name"]}}
+      />
+    </:col>
+    <:col :let={{_id, story}} label="Name"><%= story["name"] %></:col>
+    <:col :let={{_id, story}} label="Label">
+      <div class="flex">
+        <%= for label <- story["labels"] do %>
+          <.shortcut_label background_color={label["color"]}>
+            <%= label["name"] %>
+          </.shortcut_label>
+        <% end %>
+      </div>
+    </:col>
+    <:col :let={{_id, story}} label="Number"><%= story["id"] %></:col>
+    <:col :let={{_id, story}} label="Type"><%= story["story_type"] %></:col>
+  </.table>
+</.form>
