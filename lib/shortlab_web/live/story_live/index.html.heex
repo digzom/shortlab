@@ -29,4 +29,20 @@
     <:col :let={{_id, story}} label="Number"><%= story["id"] %></:col>
     <:col :let={{_id, story}} label="Type"><%= story["story_type"] %></:col>
   </.table>
+
+  <.modal
+    :if={@live_action in [:new, :edit]}
+    id="story-modal"
+    show
+    on_cancel={JS.patch(~p"/stories")}
+  >
+    <.live_component
+      module={ShortlabWeb.StoryLive.FormComponent}
+      id={@story.id || :new}
+      title={@page_title}
+      action={@live_action}
+      story={@story}
+      patch={~p"/stories"}
+    />
+  </.modal>
 </.form>

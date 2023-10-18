@@ -40,8 +40,6 @@ defmodule ShortlabWeb.StoryLive.Index do
   end
 
   def handle_event("create_mr", params, socket) do
-    IO.inspect(params)
-
     with {:ok, %Tesla.Env{body: %{"name" => branch_name}}} <- create_branch(),
          {:ok, %Tesla.Env{body: _mr_body}} <- create_mr(branch_name) do
       socket
@@ -54,11 +52,11 @@ defmodule ShortlabWeb.StoryLive.Index do
         Logger.error("#{inspect(e)}")
     end
 
-    socket
+    {:noreply, socket
     |> assign(:page_title, "fodase")
     |> assign(:story, nil)
     |> put_flash(:success, "deu certo man")
-    |> push_patch(to: ~p"/stories")
+    |> push_patch(to: ~p"/stories")}
   end
 
   defp apply_action(socket, :index, _params) do
