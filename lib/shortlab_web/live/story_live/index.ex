@@ -36,24 +36,24 @@ defmodule ShortlabWeb.StoryLive.Index do
     end)
     |> Map.keys()
 
-    {:noreply, socket |> push_navigate(to: ~p"~/stories")}
+    {:noreply, socket |> push_navigate(to: ~p"/stories")}
   end
 
   def handle_event("create_mr", params, socket) do
     IO.inspect(params)
 
-    # with {:ok, %Tesla.Env{body: %{"name" => branch_name}}} <- create_branch(),
-    #      {:ok, %Tesla.Env{body: _mr_body}} <- create_mr(branch_name) do
-    #   socket
-    #   |> assign(:page_title, "fodase")
-    #   |> assign(:story, nil)
-    #   |> put_flash(:success, "deu certo man")
-    #   |> push_patch(to: ~p"/stories")
-    # else
-    #   e ->
-    #     Logger.error("#{inspect(e)}")
-    # end
-    #
+    with {:ok, %Tesla.Env{body: %{"name" => branch_name}}} <- create_branch(),
+         {:ok, %Tesla.Env{body: _mr_body}} <- create_mr(branch_name) do
+      socket
+      |> assign(:page_title, "fodase")
+      |> assign(:story, nil)
+      |> put_flash(:success, "deu certo man")
+      |> push_patch(to: ~p"/stories")
+    else
+      e ->
+        Logger.error("#{inspect(e)}")
+    end
+
     socket
     |> assign(:page_title, "fodase")
     |> assign(:story, nil)
