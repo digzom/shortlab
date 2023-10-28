@@ -2,18 +2,23 @@ defmodule ShortlabWeb.StoryLive.Index do
   require Logger
   use ShortlabWeb, :live_view
 
+  @gitlab_access_key Application.compile_env(:shortlab, :gitlab_access_key)
+  @gitlab_url Application.compile_env(:shortcut, :gitlab_url)
+  @shortcut_token Application.compile_env(:shortcut, :shortcut_token)
+  @shortcut_url Application.compile_env(:shortcut, :shortcut_url)
+
   @impl true
   def mount(_params, _session, socket) do
     middleware = [
       {Tesla.Middleware.BaseUrl, "https://api.github.com"},
       Tesla.Middleware.JSON,
-      {Tesla.Middleware.Headers, [{"Shortcut-Token", "647bc707-c963-47ea-94c2-83c2897a301a"}]}
+      {Tesla.Middleware.Headers, [{"Shortcut-Token", @shortcut_token}]}
     ]
 
     client = Tesla.client(middleware)
 
     {:ok, %Tesla.Env{body: stories}} =
-      Tesla.get(client, "https://api.app.shortcut.com/api/v3/labels/4/stories")
+      Tesla.get(client, @shortcut_url)
 
     stories =
       Enum.map(stories, fn story ->
@@ -52,11 +57,12 @@ defmodule ShortlabWeb.StoryLive.Index do
         Logger.error("#{inspect(e)}")
     end
 
-    {:noreply, socket
-    |> assign(:page_title, "fodase")
-    |> assign(:story, nil)
-    |> put_flash(:success, "deu certo man")
-    |> push_patch(to: ~p"/stories")}
+    {:noreply,
+     socket
+     |> assign(:page_title, "fodase")
+     |> assign(:story, nil)
+     |> put_flash(:success, "deu certo man")
+     |> push_patch(to: ~p"/stories")}
   end
 
   defp apply_action(socket, :index, _params) do
@@ -68,9 +74,9 @@ defmodule ShortlabWeb.StoryLive.Index do
 
   defp create_mr(branch_name) do
     middleware = [
-      {Tesla.Middleware.BaseUrl, "https://gitlab.com/api/v4/projects/46562739/repository"},
+      {Tesla.Middleware.BaseUrl, @gitlab_url},
       Tesla.Middleware.JSON,
-      {Tesla.Middleware.Headers, [{"PRIVATE-TOKEN", "glpat-aHjS9FG5iQHYAa2vqx5u"}]}
+      {Tesla.Middleware.Headers, [{"PRIVATE-TOKEN", @gitlab_access_key}]}
     ]
 
     client = Tesla.client(middleware)
