@@ -273,6 +273,7 @@ defmodule ShortlabWeb.CoreComponents do
   attr(:prompt, :string, default: nil, doc: "the prompt for select inputs")
   attr(:options, :list, doc: "the options to pass to Phoenix.HTML.Form.options_for_select/2")
   attr(:multiple, :boolean, default: false, doc: "the multiple flag for select inputs")
+  attr(:input_value, :string, doc: "input custom value to forget that thing about being true wtf")
 
   attr(:rest, :global,
     include: ~w(autocomplete cols disabled form list max maxlength min minlength
@@ -302,7 +303,7 @@ defmodule ShortlabWeb.CoreComponents do
           type="checkbox"
           id={@id}
           name={@name}
-          value="true"
+          value={@input_value}
           checked={@checked}
           class="rounded border-zinc-300 text-zinc-900 focus:ring-0"
           {@rest}

@@ -81,26 +81,27 @@ defmodule ShortlabWeb.StoryLive.Index do
 
     story_list =
       params
-      |> Enum.filter(fn {_k, v} -> v == true end)
-      |> dbg()
-      |> Map.keys()
+      |> Enum.filter(fn {_k, v} -> v != "false" end)
 
     client = Tesla.client(middleware)
 
-    Tesla.post(client, gitlab_url, %{
+    Tesla.post(client, "https://gitlab.com/api/v4/projects/46562739/merge_requests", %{
       "allow_maintainer_to_push" => false,
-      "description" => """
-      | ID | Name |
-      |----|------|
-      | 34743 | Bloquear/reprovar os demais orçamentos em caso de escolha do orçamento vencedor |
-      | 34739 | Recusa da ordem de serviço em caso de não atendimento ao prazo estipulado |
-      """,
+      "description" => build_mr_description_table(story_list),
       "id" => 46_562_739,
       "remove_source_branch" => true,
       "source_branch" => branch_name,
       "target_branch" => "production",
       "title" => "Teste pela API numero #{Enum.random(0..100_000_000_000_000_000)}"
     })
+  end
+
+  defp build_mr_description_table(stories) do
+    """
+    | ID | Name |
+    |----|------|
+    """ <>
+      Enum.map_join(stories, "\n", fn {id, title} -> "| #{id} | #{title} |" end)
   end
 
   defp create_branch do
