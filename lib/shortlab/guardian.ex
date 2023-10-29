@@ -10,7 +10,7 @@ defmodule Shortlab.Guardian do
     {:error, :reason_for_error}
   end
 
-  def resource_from_claims(%{"sub" => id}) do
+  def resource_from_claims(%{"sub" => _id}) do
     # resource = Shortlab.Accounts.get_user!(id)
     {:ok, :resource}
   end

@@ -2,23 +2,20 @@ defmodule ShortlabWeb.StoryLive.Index do
   require Logger
   use ShortlabWeb, :live_view
 
-  @gitlab_access_key Application.compile_env(:shortlab, :gitlab_access_key)
-  @gitlab_url Application.compile_env(:shortcut, :gitlab_url)
-  @shortcut_token Application.compile_env(:shortcut, :shortcut_token)
-  @shortcut_url Application.compile_env(:shortcut, :shortcut_url)
-
   @impl true
   def mount(_params, _session, socket) do
+    {:ok, shortcut_token} = Application.get_env(:shortlab, :shortcut_token)
+    {:ok, shortcut_url} = Application.get_env(:shortlab, :shortcut_url)
+
     middleware = [
       {Tesla.Middleware.BaseUrl, "https://api.github.com"},
       Tesla.Middleware.JSON,
-      {Tesla.Middleware.Headers, [{"Shortcut-Token", @shortcut_token}]}
+      {Tesla.Middleware.Headers, [{"Shortcut-Token", shortcut_token}]}
     ]
 
     client = Tesla.client(middleware)
 
-    {:ok, %Tesla.Env{body: stories}} =
-      Tesla.get(client, @shortcut_url)
+    {:ok, %Tesla.Env{body: stories}} = Tesla.get(client, shortcut_url)
 
     stories =
       Enum.map(stories, fn story ->
@@ -46,7 +43,7 @@ defmodule ShortlabWeb.StoryLive.Index do
 
   def handle_event("create_mr", params, socket) do
     with {:ok, %Tesla.Env{body: %{"name" => branch_name}}} <- create_branch(),
-         {:ok, %Tesla.Env{body: _mr_body}} <- create_mr(branch_name) do
+         {:ok, %Tesla.Env{body: _mr_body}} <- create_mr(branch_name, params) do
       socket
       |> assign(:page_title, "fodase")
       |> assign(:story, nil)
@@ -72,19 +69,32 @@ defmodule ShortlabWeb.StoryLive.Index do
     |> assign(:story, nil)
   end
 
-  defp create_mr(branch_name) do
+  defp create_mr(branch_name, params) do
+    {:ok, gitlab_access_key} = Application.get_env(:shortlab, :gitlab_access_key)
+    {:ok, gitlab_url} = Application.get_env(:shortlab, :gitlab_url)
+
     middleware = [
-      {Tesla.Middleware.BaseUrl, @gitlab_url},
+      {Tesla.Middleware.BaseUrl, gitlab_url},
       Tesla.Middleware.JSON,
-      {Tesla.Middleware.Headers, [{"PRIVATE-TOKEN", @gitlab_access_key}]}
+      {Tesla.Middleware.Headers, [{"PRIVATE-TOKEN", gitlab_access_key}]}
     ]
+
+    story_list =
+      params
+      |> Enum.filter(fn {_k, v} -> v == true end)
+      |> dbg()
+      |> Map.keys()
 
     client = Tesla.client(middleware)
 
-    Tesla.post(client, "https://gitlab.com/api/v4/projects/46562739/merge_requests", %{
+    Tesla.post(client, gitlab_url, %{
       "allow_maintainer_to_push" => false,
-      "description" =>
-        "thats the description of this MR doing #{Enum.random(0..100_000_000_000_000_000)}",
+      "description" => """
+      | ID | Name |
+      |----|------|
+      | 34743 | Bloquear/reprovar os demais orçamentos em caso de escolha do orçamento vencedor |
+      | 34739 | Recusa da ordem de serviço em caso de não atendimento ao prazo estipulado |
+      """,
       "id" => 46_562_739,
       "remove_source_branch" => true,
       "source_branch" => branch_name,
@@ -94,10 +104,13 @@ defmodule ShortlabWeb.StoryLive.Index do
   end
 
   defp create_branch do
+    {:ok, gitlab_access_key} = Application.get_env(:shortlab, :gitlab_access_key)
+    {:ok, gitlab_url} = Application.get_env(:shortlab, :gitlab_url)
+
     middleware = [
-      {Tesla.Middleware.BaseUrl, "https://gitlab.com/api/v4/projects/46562739/repository"},
+      {Tesla.Middleware.BaseUrl, gitlab_url},
       Tesla.Middleware.JSON,
-      {Tesla.Middleware.Headers, [{"PRIVATE-TOKEN", "glpat-aHjS9FG5iQHYAa2vqx5u"}]}
+      {Tesla.Middleware.Headers, [{"PRIVATE-TOKEN", gitlab_access_key}]}
     ]
 
     client = Tesla.client(middleware)

@@ -60,6 +60,11 @@ config :shortlab, Shortlab.Guardian,
   issuer: "shortlab",
   secret_key: System.fetch_env("GUARDIAN_SECRET_KEY")
 
+config :shortlab, :gitlab_access_key, System.fetch_env("GITLAB_ACCESS_KEY")
+config :shortlab, :gitlab_url, System.fetch_env("GITLAB_URL")
+config :shortlab, :shortcut_token, System.fetch_env("SHORTCUT_TOKEN")
+config :shortlab, :shortcut_url, System.fetch_env("SHORTCUT_URL")
+
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 
