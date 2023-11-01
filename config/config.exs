@@ -68,6 +68,13 @@ config :shortlab, :shortcut_url, System.fetch_env("SHORTCUT_URL")
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 
+# Rollbax configuration
+config :rollbax,
+  access_token: System.fetch_env("ROLLBAR_ACCESS_TOKEN"),,
+  environment: System.fetch_env("ROLLBAR_ENVIRONMENT"),
+  enabled: config_env() == :prod,
+  enable_crash_reports: true
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{config_env()}.exs"
