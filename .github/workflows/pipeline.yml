@@ -1,19 +1,26 @@
 name: Test -> Deploy
 
+  # defining the branch that will trigger the pipeline
 on:
+  # when pushing
   push:
     branches: [ "main" ]
+  # when PRing
   pull_request:
     branches: [ "main" ]
 
+# config env
 env:
   MIX_ENV: test
 
+# can't change variables, just read
 permissions:
   contents: read
 
 jobs:
+  # job name
   test:
+    # services is what have to be setted up to run the job, like db
     services:
       db:
         image: postgres:14
@@ -32,7 +39,7 @@ jobs:
       # Specify the OTP and Elixir versions to use when building
       # and running the workflow steps.
       matrix:
-        otp: ['25.0.4']       # Define the OTP version [required]
+        otp: ['25.0.4']       # Define the OTP version [required] [usually, erlang version]
         elixir: ['1.14.0']
     steps:
     - name: setup elixir
@@ -43,6 +50,7 @@ jobs:
       env:
         ImageOS: ubuntu20
 
+    # TODO: read about wtf is this
     - name: Checkout
       uses: actions/checkout@v3
 
@@ -83,3 +91,9 @@ jobs:
 
     - name: Run tests
       run: mix test
+
+    - name: Create test result file
+      uses: actions/upload-artifact@v3
+      with:
+        name: test-result
+        path: test-result.txt
