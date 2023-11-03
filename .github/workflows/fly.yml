@@ -7,22 +7,8 @@ on:
       - completed
 
 jobs:
-  check-test-result:
-    name: Test Check
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: test-result
-      - name: Check test result
-        run: |
-          if [ ! -f test-result.txt ]; then
-            echo "Tests did not pass, deploy job will not run"
-            exit 1
-          fi
- 
   deploy:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     name: Deploy
     needs: check-test-result
     runs-on: ubuntu-latest

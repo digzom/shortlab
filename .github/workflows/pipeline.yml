@@ -91,12 +91,3 @@ jobs:
 
     - name: Run tests
       run: mix test
-
-    - name: Create test result file
-      run: echo "all tests passed" >> test-result.txt
-
-    - name: Upload test result file
-      uses: actions/upload-artifact@v3
-      with:
-        name: test-result
-        path: test-result.txt
