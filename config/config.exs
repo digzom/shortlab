@@ -60,17 +60,18 @@ config :shortlab, Shortlab.Guardian,
   issuer: "shortlab",
   secret_key: System.fetch_env("GUARDIAN_SECRET_KEY")
 
-config :shortlab, :gitlab_access_key, System.fetch_env("GITLAB_ACCESS_KEY")
-config :shortlab, :gitlab_url, System.fetch_env("GITLAB_URL")
-config :shortlab, :shortcut_token, System.fetch_env("SHORTCUT_TOKEN")
-config :shortlab, :shortcut_url, System.fetch_env("SHORTCUT_URL")
+# acho que tem que mudar isso aqui pra fazer igual em baixo ou fazer igual à wowlet
+config :shortlab, :gitlab_access_key, System.get_env("GITLAB_ACCESS_KEY")
+config :shortlab, :gitlab_url, System.get_env("GITLAB_URL")
+config :shortlab, :shortcut_token, System.get_env("SHORTCUT_TOKEN")
+config :shortlab, :shortcut_url, System.get_env("SHORTCUT_URL")
 
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 
 # Rollbax configuration
 config :rollbax,
-  config_callback: {Shortlab.RollbaxConfig, :config},
+  config_callback: {Shortlab.Config, :rollbar_envs},
   enabled: config_env() == :prod,
   enable_crash_reports: true
 

@@ -4,8 +4,8 @@ defmodule ShortlabWeb.StoryLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, shortcut_token} = Application.get_env(:shortlab, :shortcut_token)
-    {:ok, shortcut_url} = Application.get_env(:shortlab, :shortcut_url)
+    {:ok, shortcut_token} = Application.fetch_env(:shortlab, :shortcut_token)
+    {:ok, shortcut_url} = Application.fetch_env(:shortlab, :shortcut_url)
 
     middleware = [
       {Tesla.Middleware.BaseUrl, "https://api.github.com"},
