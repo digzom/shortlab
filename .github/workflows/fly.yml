@@ -8,7 +8,8 @@ on:
 
 jobs:
   check-test-result:
-    runs-on: ubuntu-latest,
+    name: Test Check
+    runs-on: ubuntu-latest
     steps:
       - name: Download artifact
         uses: actions/download-artifact@v3
