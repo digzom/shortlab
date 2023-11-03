@@ -70,8 +70,7 @@ config :phoenix, :json_library, Jason
 
 # Rollbax configuration
 config :rollbax,
-  access_token: {:system, "ROLLBAR_ACCESS_TOKEN", nil},
-  environment: {:system, "ROLLBAR_ENVIRONMENT", nil},
+  config_callback: {Shortlab.RollbaxConfig, :config},
   enabled: config_env() == :prod,
   enable_crash_reports: true
 
