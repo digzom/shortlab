@@ -70,8 +70,8 @@ config :phoenix, :json_library, Jason
 
 # Rollbax configuration
 config :rollbax,
-  access_token: System.fetch_env("ROLLBAR_ACCESS_TOKEN"),,
-  environment: System.fetch_env("ROLLBAR_ENVIRONMENT"),
+  access_token: {:system, "ROLLBAR_ACCESS_TOKEN", nil},
+  environment: {:system, "ROLLBAR_ENVIRONMENT", nil},
   enabled: config_env() == :prod,
   enable_crash_reports: true
 
