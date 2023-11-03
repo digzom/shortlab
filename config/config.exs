@@ -51,6 +51,12 @@ config :tailwind,
     cd: Path.expand("../assets", __DIR__)
   ]
 
+# Rollbax config
+config :rollbax,
+  config_callback: {Shortlab.Config, :rollbar_envs},
+  enabled: config_env() == :prod,
+  enable_crash_reports: true
+
 # Configures Elixir's Logger
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",
