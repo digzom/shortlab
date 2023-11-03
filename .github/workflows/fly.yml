@@ -17,7 +17,7 @@ jobs:
           name: test-result
       - name: Check test result
         run: |
-          if [ ! -f test_result.txt ]; then
+          if [ ! -f test-result.txt ]; then
             echo "Tests did not pass, deploy job will not run"
             exit 1
           fi
