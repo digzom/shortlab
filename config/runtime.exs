@@ -51,6 +51,17 @@ if config_env() == :prod do
   host = System.get_env("PHX_HOST") || "example.com"
   port = String.to_integer(System.get_env("PORT") || "4000")
 
+  config :shortlab, :gitlab_access_key, System.get_env("GITLAB_ACCESS_KEY")
+  config :shortlab, :gitlab_url, System.get_env("GITLAB_URL")
+  config :shortlab, :shortcut_token, System.get_env("SHORTCUT_TOKEN")
+  config :shortlab, :shortcut_url, System.get_env("SHORTCUT_URL")
+
+  # Rollbax config
+  config :rollbax,
+    config_callback: {Shortlab.Config, :rollbar_envs},
+    enabled: config_env() == :prod,
+    enable_crash_reports: true
+
   config :shortlab, ShortlabWeb.Endpoint,
     url: [host: host, port: 443, scheme: "https"],
     http: [
