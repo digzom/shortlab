@@ -7,6 +7,7 @@ defmodule ShortlabWeb.StoryLive.Index do
     {:ok, shortcut_token} = Application.fetch_env(:shortlab, :shortcut_token)
     {:ok, shortcut_url} = Application.fetch_env(:shortlab, :shortcut_url)
 
+    # how to generalize this?
     middleware = [
       {Tesla.Middleware.BaseUrl, "https://api.github.com"},
       Tesla.Middleware.JSON,
